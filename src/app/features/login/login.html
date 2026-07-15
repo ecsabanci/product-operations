@@ -1,0 +1,59 @@
+<div class="min-h-dvh flex items-center justify-center p-4">
+    <p-card styleClass="w-full max-w-sm">
+      <div class="flex flex-col gap-6">
+        <div class="text-center">
+          <h1 class="text-2xl font-semibold">Product Operations</h1>
+          <p class="text-sm text-gray-500 mt-1">Devam etmek icin giris yapin</p>
+        </div>
+  
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="username" class="text-sm font-medium">Kullanıcı Adı</label>
+            <input
+              pInputText
+              id="username"
+              formControlName="username"
+              autocomplete="username"
+              class="w-full"
+            />
+            <small class="text-red-500 text-xs min-h-4 block">
+              @if (form.controls.username.touched && form.controls.username.invalid) {
+                Kullanıcı Adı gerekli.
+              }
+            </small>
+          </div>
+  
+          <div class="flex flex-col gap-1">
+            <label for="password" class="text-sm font-medium">Şifre</label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              [feedback]="false"
+              [toggleMask]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              autocomplete="current-password"
+            />
+            <small class="text-red-500 text-xs min-h-4 block">
+              @if (form.controls.password.touched && form.controls.password.invalid) {
+                Şifre gerekli.
+              }
+            </small>
+          </div>
+  
+          <div class="min-h-5">
+            @if (errorMessage()) {
+              <p class="text-red-500 text-sm" role="alert">{{ errorMessage() }}</p>
+            }
+          </div>
+  
+          <p-button
+            type="submit"
+            label="Giriş Yap"
+            [loading]="loading()"
+            styleClass="w-full"
+          />
+        </form>
+      </div>
+    </p-card>
+  </div>
