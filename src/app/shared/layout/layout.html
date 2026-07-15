@@ -1,0 +1,61 @@
+<div class="min-h-dvh flex flex-col bg-surface-50">
+  <nav class="border-b border-surface-200 bg-surface-0">
+    <div
+      class="max-w-6xl mx-auto px-4 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 sm:h-14 sm:py-0">
+      <!-- Ust satir: marka + (mobilde) kullanici/cikis -->
+      <div class="flex items-center justify-between gap-4">
+        <span class="font-semibold whitespace-nowrap text-content">
+          Product Operations
+        </span>
+
+        <!-- Kullanici + rol + cikis: mobilde bu satirda sagda, sm+ ekranda saga tasinir -->
+        <div class="flex items-center gap-3 sm:hidden">
+          @if (user(); as u) {
+          <p-tag [value]="role() === 'admin' ? 'Admin' : 'Viewer'"
+            [severity]="role() === 'admin' ? 'success' : 'info'" />
+          }
+          <p-button label="Çıkış" icon="pi pi-sign-out" severity="secondary" size="small" (onClick)="logout()" />
+        </div>
+      </div>
+
+      <!-- Navigasyon linkleri: her zaman gorunur, mobilde alt satir -->
+      <div class="flex items-center gap-1 order-last sm:order-none">
+        <a routerLink="/products" routerLinkActive="!text-primary !bg-primary-50"
+          class="px-3 py-2 text-sm rounded-md text-muted hover:bg-surface-100 transition-colors">
+          Ürünler
+        </a>
+
+        @if (role() === 'viewer') {
+
+        <a routerLink="/compare" routerLinkActive="!text-primary !bg-primary-50"
+          class="px-3 py-2 text-sm rounded-md text-muted hover:bg-surface-100 transition-colors">
+          Karşılaştır
+        </a>
+        }
+
+        @if (role() === 'admin') {
+
+        <a routerLink="/low-stock" routerLinkActive="!text-primary !bg-primary-50"
+          class="px-3 py-2 text-sm rounded-md text-muted hover:bg-surface-100 transition-colors">
+          Düşük Stok
+        </a>
+        }
+      </div>
+
+      <!-- Kullanici + rol + cikis: sadece sm+ ekranda, sagda -->
+      <div class="hidden sm:flex items-center gap-3">
+        @if (user(); as u) {
+        <span class="hidden md:inline text-sm text-muted">
+          {{ u.firstName }} {{ u.lastName }}
+        </span>
+        <p-tag [value]="role() === 'admin' ? 'Admin' : 'Viewer'" [severity]="role() === 'admin' ? 'success' : 'info'" />
+        }
+        <p-button label="Çıkış" icon="pi pi-sign-out" severity="secondary" size="small" (onClick)="logout()" />
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+    <router-outlet />
+  </main>
+</div>
