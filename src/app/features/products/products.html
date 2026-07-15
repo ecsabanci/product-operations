@@ -43,6 +43,6 @@
     </div>
 
     <p-paginator [rows]="service.pageSize" [totalRecords]="service.total()" [first]="service.page() * service.pageSize"
-        (onPageChange)="onPageChange($event)" styleClass="justify-center" />
+        (onPageChange)="onPageChange($event)" [pageLinkSize]="3" styleClass="justify-center" />
     }
 </div>

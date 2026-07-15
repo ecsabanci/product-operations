@@ -1,12 +1,11 @@
 import { Component, computed, input, output } from '@angular/core';
 import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
+import { DecimalPipe, CurrencyPipe } from '@angular/common';
 import { Product } from '../../../core/models/product.model';
-import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'app-product-card',
-    imports: [Button, Tag, CurrencyPipe],
+    imports: [Button, DecimalPipe, CurrencyPipe],
     templateUrl: './product-card.html'
 })
 

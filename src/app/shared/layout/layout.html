@@ -1,56 +1,51 @@
 <div class="min-h-dvh flex flex-col bg-surface-50">
-  <nav class="border-b border-surface-200 bg-surface-0">
-    <div
-      class="max-w-6xl mx-auto px-4 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 sm:h-14 sm:py-0">
-      <!-- Ust satir: marka + (mobilde) kullanici/cikis -->
-      <div class="flex items-center justify-between gap-4">
-        <span class="font-semibold whitespace-nowrap text-content">
-          Product Operations
-        </span>
-
-        <!-- Kullanici + rol + cikis: mobilde bu satirda sagda, sm+ ekranda saga tasinir -->
-        <div class="flex items-center gap-3 sm:hidden">
-          @if (user(); as u) {
-          <p-tag [value]="role() === 'admin' ? 'Admin' : 'Viewer'"
-            [severity]="role() === 'admin' ? 'success' : 'info'" />
-          }
-          <p-button label="Çıkış" icon="pi pi-sign-out" severity="secondary" size="small" (onClick)="logout()" />
+  <nav class="border-b border-surface-200 bg-surface-0 sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-indigo-500 flex items-center justify-center">
+          <i class="pi pi-box text-white text-sm"></i>
         </div>
       </div>
 
-      <!-- Navigasyon linkleri: her zaman gorunur, mobilde alt satir -->
-      <div class="flex items-center gap-1 order-last sm:order-none">
-        <a routerLink="/products" routerLinkActive="!text-primary !bg-primary-50"
-          class="px-3 py-2 text-sm rounded-md text-muted hover:bg-surface-100 transition-colors">
+      <div class="flex items-center gap-1 h-full">
+
+        <a routerLink="/products" routerLinkActive="!text-black font-bold after:!scale-x-100"
+          class="relative h-full flex items-center px-3 text-sm text-muted hover:text-content transition-colors after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-black after:scale-x-0 after:transition-transform after:duration-200 after:origin-center">
           Ürünler
         </a>
 
         @if (role() === 'viewer') {
 
-        <a routerLink="/compare" routerLinkActive="!text-primary !bg-primary-50"
-          class="px-3 py-2 text-sm rounded-md text-muted hover:bg-surface-100 transition-colors">
+        <a routerLink="/compare" routerLinkActive="!text-black font-bold after:!scale-x-100"
+          class="relative h-full flex items-center px-3 text-sm text-muted hover:text-content transition-colors after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-black after:scale-x-0 after:transition-transform after:duration-200 after:origin-center">
           Karşılaştır
         </a>
         }
 
         @if (role() === 'admin') {
 
-        <a routerLink="/low-stock" routerLinkActive="!text-primary !bg-primary-50"
-          class="px-3 py-2 text-sm rounded-md text-muted hover:bg-surface-100 transition-colors">
+        <a routerLink="/low-stock" routerLinkActive="!text-black font-bold after:!scale-x-100"
+          class="relative h-full flex items-center px-3 text-sm text-muted hover:text-content transition-colors after:absolute after:bottom-0 after:left-2 after:right-2 after:h-0.5 after:bg-black after:scale-x-0 after:transition-transform after:duration-200 after:origin-center">
           Düşük Stok
         </a>
         }
       </div>
 
-      <!-- Kullanici + rol + cikis: sadece sm+ ekranda, sagda -->
-      <div class="hidden sm:flex items-center gap-3">
+      <div class="flex items-center">
         @if (user(); as u) {
-        <span class="hidden md:inline text-sm text-muted">
-          {{ u.firstName }} {{ u.lastName }}
-        </span>
-        <p-tag [value]="role() === 'admin' ? 'Admin' : 'Viewer'" [severity]="role() === 'admin' ? 'success' : 'info'" />
+        <button type="button" (click)="menu.toggle($event)"
+          class="flex items-center gap-2 rounded-full pl-1 pr-2 py-1 hover:bg-surface-100 transition-colors"
+          aria-label="Kullanici menusu">
+          <span
+            class="w-8 h-8 rounded-full bg-indigo-500 text-white text-xs font-semibold flex items-center justify-center">
+            {{ initials() }}
+          </span>
+          <span class="hidden sm:inline text-sm text-content">{{ u.firstName }}</span>
+          <i class="pi pi-angle-down text-xs text-muted"></i>
+        </button>
+
+        <p-menu #menu [model]="menuItems()" [popup]="true" appendTo="body" />
         }
-        <p-button label="Çıkış" icon="pi pi-sign-out" severity="secondary" size="small" (onClick)="logout()" />
       </div>
     </div>
   </nav>

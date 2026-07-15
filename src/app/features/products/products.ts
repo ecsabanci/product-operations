@@ -57,5 +57,6 @@ export class Products implements OnInit {
 
     onPageChange(event: PaginatorState): void {
         this.service.goToPage(event.page ?? 0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
