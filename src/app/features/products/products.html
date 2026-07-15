@@ -36,9 +36,14 @@
     }
 
     @else {
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         @for (product of service.products(); track product.id) {
-        <app-product-card [product]="product" />
+            <app-product-card
+                [product]="product"
+                [inComparison]="comparison.isSelected(product.id)"
+                [comparisonFull]="comparison.isFull()"
+                (compareToggle)="onCompareToggle($event)"
+            />
         }
     </div>
 

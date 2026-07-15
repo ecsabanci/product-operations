@@ -10,6 +10,8 @@ import { ProductsService } from './products.service';
 import { ProductCard } from './product-card/product-card';
 import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { ErrorState } from '../../shared/ui/error-state/error-state';
+import { ComparisonService } from '../comparison/comparison.service';
+import { Product } from '../../core/models/product.model';
 
 @Component({
     selector: 'app-products',
@@ -21,12 +23,13 @@ import { ErrorState } from '../../shared/ui/error-state/error-state';
         Paginator,
         ProductCard,
         EmptyState,
-        ErrorState
+        ErrorState,
     ],
     templateUrl: './products.html'
 })
 
 export class Products implements OnInit {
+    protected readonly comparison = inject(ComparisonService);
     protected readonly service = inject(ProductsService);
     protected readonly searchControl = new FormControl('', { nonNullable: true });
     protected readonly categoryControl = new FormControl<string | null>(null);
@@ -58,5 +61,9 @@ export class Products implements OnInit {
     onPageChange(event: PaginatorState): void {
         this.service.goToPage(event.page ?? 0);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    onCompareToggle(product: Product): void {
+        this.comparison.toggle(product);
     }
 }

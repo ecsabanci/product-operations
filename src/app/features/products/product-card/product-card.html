@@ -58,7 +58,6 @@
         </div>
 
         <p-button [label]="inComparison() ? 'Karşılaştırmadan Çıkar' : 'Karşılaştır'"
-            [severity]="inComparison() ? 'danger' : 'secondary'" [outlined]="true" size="small" styleClass="w-full mt-2"
-            [disabled]="compareDisabled()" (onClick)="onCompareClick()" />
+            [severity]="inComparison() ? 'danger' : 'secondary'" [outlined]="true" size="small" styleClass="w-full mt-2" (onClick)="onCompareClick()" />
     </div>
 </div>
