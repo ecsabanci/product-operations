@@ -1,59 +1,70 @@
-# ProductOperations
+# Product Operations
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.19.
+A product operations dashboard built as a case study: product listing with server-side search/filter/pagination, role-based access (admin/viewer), product comparison and low-stock monitoring, backed by the [DummyJSON](https://dummyjson.com) API.
 
-## Development server
-
-To start a local development server, run:
+## How to run
 
 ```bash
-ng serve
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open `http://localhost:4200`.
 
-## Code scaffolding
+### Demo accounts
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Authentication is real (`POST /auth/login` on DummyJSON). Roles are mapped locally from the username, since DummyJSON returns no role field.
 
-```bash
-ng generate component component-name
+| Role | Username | Password | Access |
+|------|----------|----------|--------|
+| Admin | `emilys` | `emilyspass` | Products + Low Stock Monitoring |
+| Viewer | `sophiab` | `sophiabpass` | Products + Product Comparison |
+
+`emilys` and `michaelw` are mapped to admin; every other DummyJSON user is a viewer.
+
+## Versions
+
+| Package | Version |
+|---------|---------|
+| Angular (standalone, zoneless) | 21.2 |
+| PrimeNG (Aura theme) | 21.1 |
+| Tailwind CSS | 4.3 |
+
+## Project structure
+
+```
+src/app/
+├── core/                  # App-wide singletons, no UI
+│   ├── api/               # Generic typed HTTP wrapper around DummyJSON
+│   ├── guards/            # authGuard, guestGuard, roleGuard(role)
+│   ├── interceptors/      # Bearer token interceptor
+│   ├── models/            # Product, User, Role interfaces + role mapping
+│   └── services/          # AuthService (signal state + localStorage session)
+├── features/              # One folder per screen, lazy-loaded via routes
+│   ├── login/
+│   ├── products/          # List + search/filter/pagination, ProductCard
+│   ├── comparison/        # ComparisonService holds the comparison rules
+│   └── low-stock/         # LowStockService groups products by threshold
+├── pages/                 # Standalone pages: not-found, unauthorized
+└── shared/
+    ├── layout/            # App shell with role-aware navbar
+    └── ui/                # EmptyState, ErrorState, LoadingSkeleton
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Design notes:
 
-```bash
-ng generate --help
-```
+- **State lives in signal-based services.** Components read signals and call service methods; derived state (`totalPages`, stock groups, `canCompare`, …) is `computed`. `effect()` is used only for side effects outside the signal graph: persisting the comparison list to localStorage.
+- **All product data operations are server-side** via DummyJSON query params (`/products/search?q=`, `/products/category/:slug`, `limit`/`skip` pagination), with a 300ms debounce on search. The one exception is low stock: DummyJSON cannot filter by stock, so that screen fetches the full list (`limit=0`) once and groups it client-side with `computed`.
+- **Strict role separation** is enforced twice: route guards redirect wrong-role access to `/unauthorized`, and role-specific UI (compare buttons, low-stock nav) is hidden per role.
+- **Comparison rules** (max 3, no duplicates, min 2 to compare, removable) live in `ComparisonService` as plain testable logic.
+- **The stock threshold is not saved on purpose.** It resets to the default (10) on every page visit, so the default value asked by the case is always the first thing you see. Only the comparison list is persisted to localStorage.
 
-## Building
+## What I would improve with more time
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Handle expired tokens (401)**: DummyJSON tokens expire after a while. On a 401 response the app should log the user out and send them back to the login page, instead of showing a generic error.
+- **Unit tests for the service logic**: the comparison rules, stock grouping and role mapping already live in services as plain logic, so writing tests for them would be cheap and valuable.
+- **Better login error messages**: show a different message for wrong credentials and for network/server problems, instead of one generic message.
+- **Fallback image for products**: if a product thumbnail fails to load, show a placeholder image instead of a broken image icon.
+- **Dark mode**: the PrimeNG theme already supports it; I would add a toggle in the navbar and map the Tailwind colors to follow it.
+- **Return URL after login**: if a logged-out user opens a deep link (for example `/low-stock`), send them back to that page after they log in.
+- **Translations (i18n)**: UI texts are hard-coded in Turkish. Moving them into translation files would make the app ready for other languages.
