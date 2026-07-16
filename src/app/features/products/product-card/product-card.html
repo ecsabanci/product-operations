@@ -13,7 +13,7 @@
             loading="lazy" />
     </div>
 
-    <div class="flex flex-col gap-2 p-4 flex-1">
+    <div class="flex flex-col gap-2 p-3 sm:p-4 flex-1">
         <div class="flex items-center justify-between text-xs">
             <span class="text-muted capitalize">{{ product().category }}</span>
             <span class="flex items-center gap-1 text-amber-500 font-medium">
@@ -30,9 +30,9 @@
         <p class="text-xs text-muted -mt-1">{{ product().brand }}</p>
         }
 
-        <div class="mt-auto pt-2 flex items-end justify-between">
+        <div class="mt-auto pt-2 flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
             <div class="flex flex-col">
-                <span class="text-lg font-bold text-content leading-none">
+                <span class="text-base sm:text-lg font-bold text-content leading-none">
                     {{ discountedPrice() | currency: 'USD' }}
                 </span>
                 @if (product().discountPercentage > 0) {
@@ -44,7 +44,7 @@
 
             @if (product().stock === 0) {
             <span class="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded-md">
-                Tukendi
+                Tükendi
             </span>
             } @else if (product().stock <= lowStockThreshold) { <span
                 class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
@@ -59,7 +59,7 @@
 
         @if (showCompare()) {
             <p-button 
-                [label]="inComparison() ? 'Karşılaştırmadan Çıkar' : 'Karşılaştır'"
+                [label]="inComparison() ? 'Çıkar' : 'Karşılaştır'"
                 [severity]="inComparison() ? 'danger' : 'secondary'" 
                 [outlined]="true" 
                 size="small" 
