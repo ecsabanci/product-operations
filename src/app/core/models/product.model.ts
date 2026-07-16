@@ -22,3 +22,5 @@ export interface ProductListResponse {
     skip: number;
     limit: number;
 }
+
+export const LOW_STOCK_THRESHOLD = 10;

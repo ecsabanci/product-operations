@@ -1,0 +1,126 @@
+<div class="flex flex-col gap-4">
+    <div>
+        <h1 class="text-xl font-semibold text-content">Düşük Stok Takibi</h1>
+        <p class="text-sm text-muted">Ürünleri stok durumuna göre izleyin</p>
+    </div>
+
+    @if (service.loading()) {
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        @for (s of skeletons; track $index) {
+        <div class="border border-surface-200 rounded-xl overflow-hidden">
+            <p-skeleton height="12rem" styleClass="!rounded-none" />
+            <div class="p-3 flex flex-col gap-2">
+                <p-skeleton height="1rem" width="80%" />
+                <p-skeleton height="1rem" width="40%" />
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    @else if (service.error()) {
+    <app-error-state title="Ürünler yüklenemedi" description="Stok verisi alınamadı." (retry)="service.retry()" />
+    }
+
+    @else {
+    <div class="bg-surface-0 border border-surface-200 rounded-xl p-4 flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-content">Düşük stok eşiği</span>
+            <span class="text-sm font-semibold text-primary">
+                {{ service.threshold() }} adet ve altı
+            </span>
+        </div>
+        <p-slider [ngModel]="thresholdModel()" (ngModelChange)="onThresholdChange($event)" [min]="1" [max]="50"
+            styleClass="w-full" />
+        <p class="text-xs text-muted">
+            Eşiği değiştirdikçe gruplar anında güncellenir. Bu değerin altındaki
+            ürünler "düşük stok" sayılır.
+        </p>
+    </div>
+
+    <p-tabs [value]="0">
+        <p-tablist>
+            <p-tab [value]="0">
+                Tükendi
+                <span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
+                    {{ service.outOfStock().length }}
+                </span>
+            </p-tab>
+            <p-tab [value]="1">
+                Düşük Stok
+                <span class="ml-2 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                    {{ service.lowStock().length }}
+                </span>
+            </p-tab>
+            <p-tab [value]="2">
+                Stokta
+                <span class="ml-2 text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                    {{ service.inStock().length }}
+                </span>
+            </p-tab>
+        </p-tablist>
+
+        <p-tabpanels>
+            <p-tabpanel [value]="0">
+                @if (service.outOfStock().length === 0) {
+                <app-empty-state title="Tukenen urun yok" description="Su an stogu biten urun bulunmuyor." />
+                } @else {
+                <div class="max-h-[600px] overflow-y-auto pr-1">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        @for (product of service.outOfStock().slice(0, visibleOut()); track product.id) {
+                        <app-product-card [product]="product" [showCompare]="false" />
+                        }
+                    </div>
+                    @if (service.outOfStock().length > visibleOut()) {
+                    <div class="flex justify-center mt-4">
+                        <p-button label="Daha fazla goster" severity="secondary" [outlined]="true" size="small"
+                            (onClick)="showMoreOut()" />
+                    </div>
+                    }
+                </div>
+                }
+            </p-tabpanel>
+
+            <p-tabpanel [value]="1">
+                @if (service.lowStock().length === 0) {
+                <app-empty-state title="Dusuk stoklu urun yok" description="Bu esikte dusuk stoklu urun bulunmuyor." />
+                } @else {
+                <div class="max-h-[600px] overflow-y-auto pr-1">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        @for (product of service.lowStock().slice(0, visibleLow()); track product.id) {
+                        <app-product-card [product]="product" [showCompare]="false" />
+                        }
+                    </div>
+                    @if (service.lowStock().length > visibleLow()) {
+                    <div class="flex justify-center mt-4">
+                        <p-button label="Daha fazla goster" severity="secondary" [outlined]="true" size="small"
+                            (onClick)="showMoreLow()" />
+                    </div>
+                    }
+                </div>
+                }
+            </p-tabpanel>
+
+            <p-tabpanel [value]="2">
+                @if (service.inStock().length === 0) {
+                <app-empty-state title="Stokta urun yok" description="Bu esikte stokta urun bulunmuyor." />
+                } @else {
+                <div class="max-h-[600px] overflow-y-auto pr-1">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        @for (product of service.inStock().slice(0, visibleIn()); track product.id) {
+                        <app-product-card [product]="product" [showCompare]="false" />
+                        }
+                    </div>
+                    @if (service.inStock().length > visibleIn()) {
+                    <div class="flex justify-center mt-4">
+                        <p-button label="Daha fazla goster" severity="secondary" [outlined]="true" size="small"
+                            (onClick)="showMoreIn()" />
+                    </div>
+                    }
+                </div>
+                }
+            </p-tabpanel>
+        </p-tabpanels>
+    </p-tabs>
+    }
+</div>

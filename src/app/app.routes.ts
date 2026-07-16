@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -19,11 +20,13 @@ export const routes: Routes = [
       },
       {
         path: 'compare',
+        canActivate: [roleGuard('viewer')],
         loadComponent: () =>
           import('./features/comparison/comparison').then((m) => m.Comparison)
       },
       {
         path: 'low-stock',
+        canActivate: [roleGuard('admin')],
         loadComponent: () =>
           import('./features/low-stock/low-stock').then((m) => m.LowStock)
       }
