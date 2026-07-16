@@ -13,11 +13,11 @@ import { Button } from 'primeng/button';
       <div>
         <h1 class="text-2xl font-semibold text-content">Erişim yetkiniz yok</h1>
         <p class="text-sm text-muted mt-1 max-w-md">
-          Bu sayfayı görüntüleme izniniz bulunmuyor. Rolünuz bu alana erişime
+          Bu sayfayı görüntüleme izniniz bulunmuyor. Rolünüz bu alana erişime
           uygun değil.
         </p>
       </div>
-      <p-button label="Ürünlere don" icon="pi pi-arrow-left" routerLink="/products" />
+      <p-button label="Ürünlere dön" icon="pi pi-arrow-left" routerLink="/products" />
     </div>
   `
 })

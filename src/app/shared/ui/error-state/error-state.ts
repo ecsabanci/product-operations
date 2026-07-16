@@ -23,6 +23,6 @@ import { Button } from 'primeng/button';
 
 export class ErrorState {
     readonly title = input('Bir şeyler ters gitti');
-    readonly description = input('Veri yuklenirken bir hata olustu.');
+    readonly description = input('Veri yüklenirken bir hata oluştu.');
     readonly retry = output<void>();
 }
