@@ -48,7 +48,7 @@ export class LowStockService {
     }
 
     retry(): void {
-        this._all.set([]); // yeniden cekebilmek icin sifirla
+        this._all.set([]); // reset so load() fetches again
         this.load();
     }
 }

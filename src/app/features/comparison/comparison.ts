@@ -73,13 +73,4 @@ export class Comparison {
     private formatPrice(value: number): string {
         return `$${value.toFixed(2)}`;
     }
-
-    private minIndex(nums: number[]): number {
-        return nums.indexOf(Math.min(...nums));
-    }
-
-    private maxIndex(nums: number[]): number {
-        return nums.indexOf(Math.max(...nums));
-    }
-
 }

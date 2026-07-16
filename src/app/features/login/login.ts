@@ -30,7 +30,7 @@ export class Login {
         password: ['', [Validators.required]]
     });
     async onSubmit(): Promise<void> {
-        // Bos/gecersiz formda API'ye gitme; alanlari 'touched' yapip hatalari goster.
+        // Skip the API call on an invalid form; mark fields touched and show errors
         if (this.form.invalid) {
             this.form.markAllAsTouched();
             return;
