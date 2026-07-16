@@ -1,16 +1,35 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Product } from '../../core/models/product.model';
 
 const MAX_COMPARE = 3;
 const MIN_COMPARE = 2;
+const STORAGE_KEY = 'pop_comparison';
 
 @Injectable({ providedIn: 'root' })
 export class ComparisonService {
     private readonly messageService = inject(MessageService);
 
-    private readonly _selected = signal<Product[]>([]);
+    private readonly _selected = signal<Product[]>(this.hydrate());
     readonly selected = this._selected.asReadonly();
+
+    constructor() {
+        // side effect outside the signal graph to keep the selection across refreshes
+        effect(() => {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(this._selected()));
+        });
+    }
+
+    private hydrate(): Product[] {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        try {
+            return JSON.parse(raw) as Product[];
+        } catch {
+            localStorage.removeItem(STORAGE_KEY);
+            return [];
+        }
+    }
 
     readonly count = computed(() => this._selected().length);
     readonly isFull = computed(() => this._selected().length >= MAX_COMPARE);
@@ -43,7 +62,7 @@ export class ComparisonService {
 
         if (this.isSelected(product.id)) return;
 
-        this._selected.update((list) => [...list, product]); // referance should can, so we assign a new list
+        this._selected.update((list) => [...list, product]); // new array reference so the signal notifies consumers
     }
 
     remove(productId: number): void {
