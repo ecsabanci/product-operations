@@ -1,13 +1,13 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Slider } from 'primeng/slider';
 import { FormsModule } from '@angular/forms';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 import { Button } from 'primeng/button';
-import { Skeleton } from 'primeng/skeleton';
 import { LowStockService } from './low-stock.service';
 import { ProductCard } from '../products/product-card/product-card';
 import { EmptyState } from '../../shared/ui/empty-state/empty-state';
 import { ErrorState } from '../../shared/ui/error-state/error-state';
+import { LoadingSkeleton } from '../../shared/ui/loading-skeleton/loading-skeleton';
 
 const PAGE_STEP = 24;
 
@@ -22,10 +22,10 @@ const PAGE_STEP = 24;
         TabPanels,
         TabPanel,
         Button,
-        Skeleton,
         ProductCard,
         EmptyState,
-        ErrorState
+        ErrorState,
+        LoadingSkeleton
     ],
     templateUrl: './low-stock.html'
 })
@@ -36,8 +36,6 @@ export class LowStock implements OnInit {
     protected readonly visibleOut = signal(PAGE_STEP);
     protected readonly visibleLow = signal(PAGE_STEP);
     protected readonly visibleIn = signal(PAGE_STEP);
-
-    protected readonly skeletons = Array.from({ length: 8 });
 
     ngOnInit(): void {
         this.service.load();
